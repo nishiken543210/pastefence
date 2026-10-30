@@ -22,6 +22,25 @@
       ]
     },
     {
+      "name": "AIに貼る前に取り除く見えない文字",
+      "enabled": true,
+      "matchMode": "any",
+      "conditions": [
+        {
+          "label": "指示を隠せるタグ文字",
+          "matchType": "regex",
+          "pattern": "\\uDB40[\\uDC00-\\uDC7F]",
+          "replaceWith": ""
+        },
+        {
+          "label": "文字の並びを偽装する制御文字",
+          "matchType": "regex",
+          "pattern": "[\\u202A-\\u202E\\u2066-\\u2069]",
+          "replaceWith": ""
+        }
+      ]
+    },
+    {
       "name": "秘密情報",
       "enabled": true,
       "matchMode": "any",
@@ -106,6 +125,19 @@
           "matchType": "regex",
           "pattern": "(?<![0-9])(?:4[0-9]{3}|5[1-5][0-9]{2}|3[47][0-9]{2}|6011|35[0-9]{2})[ -][0-9]{4}[ -][0-9]{4}[ -][0-9]{3,4}(?![0-9])",
           "replaceWith": "[カード番号を保護]"
+        }
+      ]
+    },
+    {
+      "name": "幅のない文字（既定では止めています）",
+      "enabled": false,
+      "matchMode": "any",
+      "conditions": [
+        {
+          "label": "ゼロ幅の文字",
+          "matchType": "regex",
+          "pattern": "[\\u200B-\\u200D\\u2060\\uFEFF\\u00AD]",
+          "replaceWith": ""
         }
       ]
     },

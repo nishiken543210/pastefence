@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <!-- PasteFence アイコン（小さい寸法用：16/24）
+       大きい版をそのまま縮めると細部が潰れるので、同じ形のまま描き直したもの。
+       クリップボード・クリップ・伏せ字 ■■■ の 3 要素だけを残し、
+       「伏せずに残る文字」の薄い線は捨てている。
+
+       座標は全て 3 の倍数。48 ÷ 3 = 16 なので、16px では全ての辺が
+       整数ピクセルに乗る（ぼやけない）。色は大きい版と同じ 3 色。 -->
+  <title>PasteFence</title>
+
+  <!-- 土台 -->
+  <rect x="0" y="0" width="48" height="48" rx="9" fill="#1B3A5C"/>
+
+  <!-- クリップ（止める合図） -->
+  <rect x="18" y="3" width="12" height="6" rx="3" fill="#E9A13B"/>
+
+  <!-- クリップボード本体 -->
+  <rect x="9" y="9" width="30" height="33" rx="3" fill="#FFFFFF"/>
+
+  <!-- 伏せ字 ■■■ -->
+  <rect x="12" y="24" width="6" height="6" fill="#1B3A5C"/>
+  <rect x="21" y="24" width="6" height="6" fill="#1B3A5C"/>
+  <rect x="30" y="24" width="6" height="6" fill="#1B3A5C"/>
+</svg>

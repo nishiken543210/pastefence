@@ -124,7 +124,9 @@ internal static class DefaultRulesCorpusTests
 
     // 🔴 架空のトークン。1 つの文字列として書くと GitHub の秘密情報スキャンが
     // 本物と判定して push を止めるため、分けて組み立てている（中身は偽物）。
-    private static readonly string SlackTokenSample = "xoxb" + "-123456789012-" + "abcdefghijklmnopqrst";
+    // 🔴 フィールドにすると、先に書いた MustMatch の初期化時にまだ空なので取りこぼす。
+    //    使うたびに組み立てるプロパティにしてある。
+    private static string SlackTokenSample => "xoxb" + "-123456789012-" + "abcdefghijklmnopqrst";
 
     // U+1F3F4 BLACK FLAG（地域旗の基底文字）
     private const string FlagBase = "\U0001F3F4";

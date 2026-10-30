@@ -8,7 +8,7 @@
       "matchMode": "all",
       "conditions": [
         {
-          "label": "顧客名A",
+          "label": "動作確認用の例",
           "matchType": "contains",
           "pattern": "顧客名A",
           "replaceWith": "[顧客名を保護]"
@@ -33,10 +33,124 @@
           "replaceWith": "[機密表示を保護]"
         },
         {
-          "label": "APIキーらしき文字列",
+          "label": "APIキーらしき記述",
           "matchType": "regex",
           "pattern": "(?i)(api[_-]?key\\s*[:=]\\s*)[^\\s,;]+",
           "replaceWith": "$1[値を保護]"
+        }
+      ]
+    },
+    {
+      "name": "鍵・トークン",
+      "enabled": true,
+      "matchMode": "any",
+      "conditions": [
+        {
+          "label": "AWSのアクセスキーID",
+          "matchType": "regex",
+          "pattern": "(?<![A-Z0-9])(?:AKIA|ASIA|AIDA|AROA)[0-9A-Z]{16}(?![0-9A-Z])",
+          "replaceWith": "[アクセスキーを保護]"
+        },
+        {
+          "label": "GitHubのトークン",
+          "matchType": "regex",
+          "pattern": "gh[pousr]_[A-Za-z0-9]{30,}",
+          "replaceWith": "[トークンを保護]"
+        },
+        {
+          "label": "Slackのトークン",
+          "matchType": "regex",
+          "pattern": "xox[baprse]-[A-Za-z0-9-]{10,}",
+          "replaceWith": "[トークンを保護]"
+        },
+        {
+          "label": "秘密鍵の書き出し",
+          "matchType": "regex",
+          "pattern": "-----BEGIN [A-Z ]*PRIVATE KEY-----",
+          "replaceWith": "[秘密鍵を保護]"
+        },
+        {
+          "label": "Authorizationヘッダー",
+          "matchType": "regex",
+          "pattern": "(?i)Bearer\\s+[A-Za-z0-9._~+/=-]{20,}",
+          "replaceWith": "[トークンを保護]"
+        },
+        {
+          "label": "パスワードらしき記述",
+          "matchType": "regex",
+          "pattern": "(?i)((?:pass(?:word)?|passwd|secret|token)\\s*[:=]\\s*)[^\\s,;]+",
+          "replaceWith": "$1[値を保護]"
+        }
+      ]
+    },
+    {
+      "name": "利用者名とパスワードを含む接続先",
+      "enabled": true,
+      "matchMode": "any",
+      "conditions": [
+        {
+          "label": "接続文字列",
+          "matchType": "regex",
+          "pattern": "(?i)[a-z][a-z0-9+.-]*://[^\\s/:@]+:[^\\s/@]+@",
+          "replaceWith": "[接続情報を保護]"
+        }
+      ]
+    },
+    {
+      "name": "カード番号らしき並び",
+      "enabled": true,
+      "matchMode": "any",
+      "conditions": [
+        {
+          "label": "区切りのある16桁",
+          "matchType": "regex",
+          "pattern": "(?<![0-9])(?:4[0-9]{3}|5[1-5][0-9]{2}|3[47][0-9]{2}|6011|35[0-9]{2})[ -][0-9]{4}[ -][0-9]{4}[ -][0-9]{3,4}(?![0-9])",
+          "replaceWith": "[カード番号を保護]"
+        }
+      ]
+    },
+    {
+      "name": "メールアドレス（既定では止めています）",
+      "enabled": false,
+      "matchMode": "any",
+      "conditions": [
+        {
+          "label": "メールアドレス",
+          "matchType": "regex",
+          "pattern": "(?i)[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}",
+          "replaceWith": "[メールアドレスを保護]"
+        }
+      ]
+    },
+    {
+      "name": "12桁の番号（既定では止めています）",
+      "enabled": false,
+      "matchMode": "any",
+      "conditions": [
+        {
+          "label": "区切りのある12桁",
+          "matchType": "regex",
+          "pattern": "(?<![0-9])[0-9]{4}[ -]?[0-9]{4}[ -]?[0-9]{4}(?![0-9])",
+          "replaceWith": "[番号を保護]"
+        }
+      ]
+    },
+    {
+      "name": "自分の職場の言葉（ここを書き換えて使う）",
+      "enabled": false,
+      "matchMode": "any",
+      "conditions": [
+        {
+          "label": "取引先の名前",
+          "matchType": "contains",
+          "pattern": "ここに取引先の名前を書く",
+          "replaceWith": "[取引先を保護]"
+        },
+        {
+          "label": "案件の符丁",
+          "matchType": "contains",
+          "pattern": "ここに案件の符丁を書く",
+          "replaceWith": "[案件名を保護]"
         }
       ]
     }

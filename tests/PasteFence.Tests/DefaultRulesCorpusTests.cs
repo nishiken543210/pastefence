@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 
 namespace PasteFence.Tests;
 
@@ -63,6 +63,40 @@ internal static class DefaultRulesCorpusTests
 
     public static void Register(TestHarness harness)
     {
+        // 🔴 v0.1.0 は、公開した実行ファイルを単体で落としても動かなかった。
+        //    ルールの設定ファイルが配布物に入っておらず、落とした人の手元に無かったため。
+        //    同じ壊れ方を二度やらないための検査。
+        harness.Run("既定の保護ルールが実行ファイルに埋め込まれている", () =>
+        {
+            var json = ConfigLocator.ReadEmbeddedDefault();
+            TestHarness.Assert(!string.IsNullOrWhiteSpace(json), "埋め込まれた既定ルールが空です。");
+
+            var directory = Path.Combine(Path.GetTempPath(), "PasteFenceTests", Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(directory);
+            try
+            {
+                var path = Path.Combine(directory, ConfigLocator.FileName);
+                File.WriteAllText(path, json);
+
+                var embedded = PasteFenceConfig.Load(path);
+                RuleEngine.Validate(embedded);
+
+                // 出力フォルダーに置いてある正本とずれていないか
+                var onDisk = LoadDefaultConfig();
+                TestHarness.Assert(embedded.Rules.Count == onDisk.Rules.Count,
+                    $"埋め込んだルールが {embedded.Rules.Count} 件、ファイル側が {onDisk.Rules.Count} 件でずれています。");
+
+                var embeddedNames = string.Join("、", embedded.Rules.Select(r => r.Name));
+                var onDiskNames = string.Join("、", onDisk.Rules.Select(r => r.Name));
+                TestHarness.Assert(embeddedNames == onDiskNames,
+                    $"ルールの中身がずれています。埋め込み: {embeddedNames} / ファイル: {onDiskNames}");
+            }
+            finally
+            {
+                Directory.Delete(directory, recursive: true);
+            }
+        });
+
         harness.Run("既定ルールが普段の文字に当たらない", () =>
         {
             var config = LoadDefaultConfig();

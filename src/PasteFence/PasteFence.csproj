@@ -28,6 +28,9 @@
   <ItemGroup>
     <!-- トレイと画面でも同じ絵を使うため、実行ファイルに埋め込む（AppIcons.cs が読む） -->
     <EmbeddedResource Include="pastefence.ico" />
+    <!-- 実行ファイル単体で落とした人でも動くよう、既定の保護ルールも埋め込む（ConfigLocator.cs が読む） -->
+    <EmbeddedResource Include="pastefence-rules.json" />
+    <InternalsVisibleTo Include="PasteFence.Tests" />
   </ItemGroup>
   <ItemGroup>
     <None Update="pastefence-rules.json">

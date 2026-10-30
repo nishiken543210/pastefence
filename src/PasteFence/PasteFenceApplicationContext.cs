@@ -4,7 +4,7 @@ namespace PasteFence;
 
 public sealed class PasteFenceApplicationContext : ApplicationContext
 {
-    private readonly string _configPath = Path.Combine(AppContext.BaseDirectory, "pastefence-rules.json");
+    private readonly string _configPath = ConfigLocator.Ensure();
     private readonly string _logDirectory = Path.Combine(AppContext.BaseDirectory, "logs");
     private readonly string _helpSeenPath = Path.Combine(AppContext.BaseDirectory, "pastefence-help-seen.txt");
     private PasteFenceConfig _config;

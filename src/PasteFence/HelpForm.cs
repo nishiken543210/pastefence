@@ -1,4 +1,4 @@
-namespace PasteFence;
+﻿namespace PasteFence;
 
 public sealed class HelpForm : Form
 {
@@ -18,7 +18,7 @@ public sealed class HelpForm : Form
         Size = new Size(1040, 760);
         MinimumSize = new Size(850, 620);
         Font = new Font("Yu Gothic UI", 9F);
-        Icon = SystemIcons.Question;
+        Icon = AppIcons.Window;
         KeyPreview = true;
 
         var title = new Label

@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace PasteFence;
 
@@ -34,7 +34,7 @@ public sealed class SettingsForm : Form
         Size = new Size(1040, 700);
         MinimumSize = new Size(850, 570);
         Font = new Font("Yu Gothic UI", 9F);
-        Icon = SystemIcons.Shield;
+        Icon = AppIcons.Window;
         KeyPreview = true;
 
         var title = new Label

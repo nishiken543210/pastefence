@@ -26,6 +26,10 @@
     <ApplicationHighDpiMode>SystemAware</ApplicationHighDpiMode>
   </PropertyGroup>
   <ItemGroup>
+    <!-- トレイと画面でも同じ絵を使うため、実行ファイルに埋め込む（AppIcons.cs が読む） -->
+    <EmbeddedResource Include="pastefence.ico" />
+  </ItemGroup>
+  <ItemGroup>
     <None Update="pastefence-rules.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

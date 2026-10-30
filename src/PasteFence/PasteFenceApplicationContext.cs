@@ -49,7 +49,7 @@ public sealed class PasteFenceApplicationContext : ApplicationContext
 
         _trayIcon = new NotifyIcon
         {
-            Icon = SystemIcons.Shield,
+            Icon = AppIcons.Tray,
             Text = "PasteFence - 監視中",
             ContextMenuStrip = menu,
             Visible = true

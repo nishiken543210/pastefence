@@ -1,4 +1,4 @@
-namespace PasteFence;
+﻿namespace PasteFence;
 
 public sealed class DetectionForm : Form
 {
@@ -54,7 +54,9 @@ public sealed class DetectionForm : Form
         reasonList.Columns.Add("条件", 160);
         reasonList.Columns.Add("ルール", 180);
         reasonList.Columns.Add("理由", 180);
-        foreach (var detail in result.Details)
+        // 一致したものを先に出す。ルールが増えると不一致の行が増え、
+        // そのままの順では「何に当たったのか」が下へ埋もれて読めなくなる。
+        foreach (var detail in result.Details.OrderByDescending(d => d.Matched))
         {
             var item = new ListViewItem(detail.Matched ? "一致" : "不一致");
             item.SubItems.Add(detail.Label);

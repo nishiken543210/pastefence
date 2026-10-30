@@ -20,7 +20,7 @@ public sealed class ControlCenterForm : Form
         // 設計どおりの大きさを下限にして、隠れない状態を保証する。
         MinimumSize = new Size(730, 330);
         Font = new Font("Yu Gothic UI", 9F);
-        Icon = SystemIcons.Shield;
+        Icon = AppIcons.Window;
         KeyPreview = true;
 
         var title = new Label

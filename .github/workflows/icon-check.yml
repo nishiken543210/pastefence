@@ -38,51 +38,19 @@ jobs:
           -o publish/light
 
       - name: check embedded icon
-        # Windows PowerShell 5.1 を使う。.NET Framework の System.Drawing が
-        # 最初から入っていて、追加の取得が要らないため。
+        # Windows PowerShell 5.1 を使う（.NET Framework の System.Drawing が
+        # 最初から入っていて、追加の取得が要らないため）。
+        #
+        # 中身は assets/icon/check-embedded-icon.ps1 に置いてある。
+        # ここに直接書くと、ランナーが作る .ps1 に BOM が付かず、
+        # PowerShell 5.1 がそれを ANSI として読んで日本語が化け、構文エラーになる。
+        # リポジトリ側のファイルは BOM 付きで保存してあるので化けない。
+        # この run: は ASCII だけで書くこと。
         shell: powershell
         run: |
           $ErrorActionPreference = 'Stop'
-          Add-Type -AssemblyName System.Drawing
-
-          # pastefence.ico で使っている 3 色。これが揃っていれば、
-          # 既定のアイコンではなく PasteFence のアイコンが入っている。
-          $navyRgb  = 0x1B3A5C
-          $whiteRgb = 0xFFFFFF
-
-          function Test-Exe([string]$path) {
-            $full = (Resolve-Path $path).Path
-            Write-Host "=== $full ==="
-
-            $icon = [System.Drawing.Icon]::ExtractAssociatedIcon($full)
-            if ($null -eq $icon) { throw "アイコンを取り出せませんでした: $full" }
-            $bmp = $icon.ToBitmap()
-            Write-Host ("  取り出した寸法: {0}x{1}" -f $bmp.Width, $bmp.Height)
-
-            $navy = 0; $white = 0; $amber = 0
-            for ($y = 0; $y -lt $bmp.Height; $y++) {
-              for ($x = 0; $x -lt $bmp.Width; $x++) {
-                $p = $bmp.GetPixel($x, $y)
-                if ($p.A -lt 128) { continue }
-                $rgb = ($p.R -shl 16) -bor ($p.G -shl 8) -bor $p.B
-                if ($rgb -eq $navyRgb) { $navy++ }
-                elseif ($rgb -eq $whiteRgb) { $white++ }
-                # 琥珀色のクリップは面積が小さく縁がぼけるので幅を持たせて数える
-                elseif ($p.R -gt 200 -and $p.G -gt 120 -and $p.G -lt 190 -and $p.B -lt 110) { $amber++ }
-              }
-            }
-            Write-Host ("  紺 {0}px / 白 {1}px / 琥珀 {2}px" -f $navy, $white, $amber)
-
-            if ($navy  -lt 1) { throw "紺色 #1B3A5C が無い。別のアイコンが入っている: $full" }
-            if ($white -lt 1) { throw "白 #FFFFFF が無い。別のアイコンが入っている: $full" }
-            if ($amber -lt 1) { throw "琥珀色のクリップが無い。別のアイコンが入っている: $full" }
-
-            $bmp.Dispose(); $icon.Dispose()
-          }
-
-          Test-Exe 'publish/standalone/PasteFence.exe'
-          Test-Exe 'publish/light/PasteFence.exe'
-          Write-Host '2 つとも PasteFence のアイコンが埋まっている。'
+          & powershell.exe -NoProfile -ExecutionPolicy Bypass -File assets\icon\check-embedded-icon.ps1 publish\standalone\PasteFence.exe publish\light\PasteFence.exe
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       # エクスプローラーでの見た目は人の目でしか確かめられないので、
       # 落として確認できるように置いておく。

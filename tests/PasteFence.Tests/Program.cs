@@ -1,6 +1,7 @@
 ﻿using PasteFence;
+using PasteFence.Tests;
 
-var failures = new List<string>();
+var harness = new TestHarness();
 
 Run("既定サンプルをAND判定して安全版へ置換", () =>
 {
@@ -78,16 +79,23 @@ Run("ヘルプに目的・基本操作・設定・具体例・Q&A相当を含む
     Assert(allText.Contains("旧PowerShell版"), "二重起動の注意がありません。");
 });
 
-if (failures.Count > 0)
-{
-    Console.Error.WriteLine($"FAIL: {failures.Count} test(s)");
-    foreach (var failure in failures)
-        Console.Error.WriteLine("- " + failure);
-    return 1;
-}
+// ここから下は別ファイルに分けた試験群。
+// 製品の中核（クリップボードの読み書き・状態の移り変わり）は試験の作りが重いので分けてある。
+RuleEngineTests.Register(harness);
+ConfigTests.Register(harness);
 
-Console.WriteLine("PASS: 7 tests");
-return 0;
+// クリップボードと WinForms のオブジェクトは STA スレッドでしか扱えない。
+// 設定の読み込みは STA スレッドの外で済ませておく
+var clipboardConfig = LoadConfig();
+StaRunner.Run(() =>
+{
+    var clipboardUsable = ClipboardInterop.IsClipboardUsable();
+    ClipboardTests.Register(harness, clipboardUsable);
+    ApplicationContextTests.Register(harness, clipboardConfig, clipboardUsable);
+});
+
+// 件数は実際に通った数を出す（環境によって飛ばす試験があるため固定値にしない）
+return harness.Report();
 
 PasteFenceConfig LoadConfig()
 {
@@ -97,21 +105,6 @@ PasteFenceConfig LoadConfig()
     return PasteFenceConfig.Load(path);
 }
 
-void Run(string name, Action test)
-{
-    try
-    {
-        test();
-        Console.WriteLine("PASS: " + name);
-    }
-    catch (Exception ex)
-    {
-        failures.Add($"{name}: {ex.Message}");
-    }
-}
+void Run(string name, Action test) => harness.Run(name, test);
 
-static void Assert(bool condition, string message)
-{
-    if (!condition)
-        throw new Exception(message);
-}
+static void Assert(bool condition, string message) => TestHarness.Assert(condition, message);

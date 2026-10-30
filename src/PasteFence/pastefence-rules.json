@@ -1,0 +1,44 @@
+{
+  "originalAccessSeconds": 10,
+  "logRetentionDays": 30,
+  "rules": [
+    {
+      "name": "顧客名と電話番号",
+      "enabled": true,
+      "matchMode": "all",
+      "conditions": [
+        {
+          "label": "顧客名A",
+          "matchType": "contains",
+          "pattern": "顧客名A",
+          "replaceWith": "[顧客名を保護]"
+        },
+        {
+          "label": "電話番号",
+          "matchType": "regex",
+          "pattern": "(?<!\\d)0\\d{1,4}-?\\d{1,4}-?\\d{3,4}(?!\\d)",
+          "replaceWith": "[電話番号を保護]"
+        }
+      ]
+    },
+    {
+      "name": "秘密情報",
+      "enabled": true,
+      "matchMode": "any",
+      "conditions": [
+        {
+          "label": "社外秘",
+          "matchType": "contains",
+          "pattern": "社外秘",
+          "replaceWith": "[機密表示を保護]"
+        },
+        {
+          "label": "APIキーらしき文字列",
+          "matchType": "regex",
+          "pattern": "(?i)(api[_-]?key\\s*[:=]\\s*)[^\\s,;]+",
+          "replaceWith": "$1[値を保護]"
+        }
+      ]
+    }
+  ]
+}

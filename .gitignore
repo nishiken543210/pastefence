@@ -1,0 +1,16 @@
+# ビルド生成物
+bin/
+obj/
+dist/
+*.user
+
+# 実行時に作られるもの
+logs/
+.help-seen
+
+# NuGet のオフライン退避
+.nuget-packages/
+
+# OS
+Thumbs.db
+.DS_Store

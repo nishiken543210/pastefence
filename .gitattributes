@@ -1,0 +1,15 @@
+# 改行コードを最初から固定する（後から入れると全ファイルが差分になるため）
+# 既定: リポジトリには LF で保存する
+* text=auto eol=lf
+
+# Windows 専用のファイルは、作業コピーでは CRLF にする
+*.cs      text eol=crlf
+*.csproj  text eol=crlf
+*.sln     text eol=crlf
+*.ps1     text eol=crlf
+*.cmd     text eol=crlf
+*.bat     text eol=crlf
+
+*.ico binary
+*.png binary
+*.exe binary

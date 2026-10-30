@@ -18,9 +18,10 @@ Add-Type -AssemblyName System.Drawing
 # pastefence.ico で使っている色。この 3 色が揃っていれば、
 # 既定のアイコンではなく PasteFence のアイコンが入っていると言える。
 #
-# 色は厳密一致では見ない。Icon.ToBitmap() は GDI+ を通るため、
-# 元の値から数階調ずれることがある（実際ずれていた）。
-# 代わりに ±16 の幅を持たせ、さらに「全体の何 % を占めるか」で判定する。
+# 色は厳密一致では見ない。縁の滑らかにした部分は中間色になるので、
+# ±16 の幅を持たせ、さらに「全体の何 % を占めるか」で判定する。
+# （平らな部分の色は実際には 1 階調もずれていない。白は期待値ちょうどの
+#   380px が出る。）
 $targets = @(
     @{ Name = '紺';   R = 0x1B; G = 0x3A; B = 0x5C; MinPercent = 10.0 },
     @{ Name = '白';   R = 0xFF; G = 0xFF; B = 0xFF; MinPercent = 5.0 },
@@ -54,7 +55,9 @@ function Test-Exe {
         foreach ($x in 0..($bmp.Width - 1)) {
             $p = $bmp.GetPixel($x, $y)
 
-            $key = ($p.R -shl 16) -bor ($p.G -shl 8) -bor $p.B
+            # [int] への変換は必須。PowerShell の -shl は左辺の型の幅で
+            # 桁を落とすので、byte のまま 16 桁ずらすと 0 になってしまう。
+            $key = ([int]$p.R -shl 16) -bor ([int]$p.G -shl 8) -bor [int]$p.B
             if ($hist.ContainsKey($key)) { $hist[$key] = $hist[$key] + 1 } else { $hist[$key] = 1 }
 
             for ($i = 0; $i -lt $targets.Count; $i++) {

@@ -27,15 +27,33 @@
       "matchMode": "any",
       "conditions": [
         {
-          "label": "指示を隠せるタグ文字",
+          "label": "長く続くタグ文字",
           "matchType": "regex",
-          "pattern": "\\uDB40[\\uDC00-\\uDC7F]",
+          "pattern": "(?:\\uDB40[\\uDC00-\\uDC7F]){7,}",
+          "replaceWith": ""
+        },
+        {
+          "label": "旗以外のタグ文字",
+          "matchType": "regex",
+          "pattern": "(?<!\\uD83C\\uDFF4(?:\\uDB40[\\uDC00-\\uDC7F])*)\\uDB40[\\uDC00-\\uDC7F]",
           "replaceWith": ""
         },
         {
           "label": "文字の並びを偽装する制御文字",
           "matchType": "regex",
           "pattern": "[\\u202A-\\u202E\\u2066-\\u2069]",
+          "replaceWith": ""
+        },
+        {
+          "label": "連続した異体字セレクタ（補助）",
+          "matchType": "regex",
+          "pattern": "(?:\\uDB40[\\uDD00-\\uDDEF]){2,}",
+          "replaceWith": ""
+        },
+        {
+          "label": "連続した異体字セレクタ（基本）",
+          "matchType": "regex",
+          "pattern": "[\\uFE00-\\uFE0F]{2,}",
           "replaceWith": ""
         }
       ]

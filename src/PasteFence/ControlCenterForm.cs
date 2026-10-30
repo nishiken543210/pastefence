@@ -1,4 +1,4 @@
-namespace PasteFence;
+﻿namespace PasteFence;
 
 public sealed class ControlCenterForm : Form
 {
@@ -15,7 +15,10 @@ public sealed class ControlCenterForm : Form
         Text = "PasteFence - コントロールセンター";
         StartPosition = FormStartPosition.CenterScreen;
         Size = new Size(730, 330);
-        MinimumSize = new Size(680, 300);
+        // この画面だけ部品が絶対座標で置かれており、縮めるとボタンが隠れて押せなくなる
+        // （下 17px・右 16px がはみ出す。他の 3 画面は Anchor で追従する）。
+        // 設計どおりの大きさを下限にして、隠れない状態を保証する。
+        MinimumSize = new Size(730, 330);
         Font = new Font("Yu Gothic UI", 9F);
         Icon = SystemIcons.Shield;
         KeyPreview = true;
@@ -64,14 +67,19 @@ public sealed class ControlCenterForm : Form
         };
 
         var help = new Button { Text = "使い方", Size = new Size(110, 38), Location = new Point(30, 240) };
+        help.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
         help.Click += (_, _) => HelpOpenRequested?.Invoke(this, EventArgs.Empty);
         var settings = new Button { Text = "保護ルール設定", Size = new Size(145, 38), Location = new Point(150, 240) };
+        settings.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
         settings.Click += (_, _) => SettingsRequested?.Invoke(this, EventArgs.Empty);
         var logs = new Button { Text = "ログフォルダー", Size = new Size(130, 38), Location = new Point(305, 240) };
+        logs.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
         logs.Click += (_, _) => LogsRequested?.Invoke(this, EventArgs.Empty);
         var hide = new Button { Text = "閉じて常駐", Size = new Size(115, 38), Location = new Point(445, 240) };
+        hide.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
         hide.Click += (_, _) => Hide();
         var exit = new Button { Text = "終了", Size = new Size(100, 38), Location = new Point(570, 240) };
+        exit.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
         exit.Click += (_, _) => ExitRequested?.Invoke(this, EventArgs.Empty);
 
         FormClosing += (_, args) =>

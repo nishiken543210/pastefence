@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 
 namespace PasteFence.Tests;
 
@@ -47,16 +47,16 @@ internal static class ClipboardTests
     {
         const string text = "[顧客名を保護]\r\n電話番号：[電話番号を保護]";
         ProtectedClipboard.SetProtectedText(text);
-        TestHarness.Assert(ProtectedClipboard.TryGetText() == text, "書き込んだ内容を読み戻せませんでした。");
+        TestHarness.Assert(TestHarness.ClipboardSettlesTo(text), "書き込んだ内容を読み戻せませんでした。");
     }
 
     private static void ClearEmptiesClipboard()
     {
         ProtectedClipboard.SetProtectedText("消去前の安全版");
-        TestHarness.Assert(ProtectedClipboard.TryGetText() is not null, "消去前の書き込みに失敗しました。");
+        TestHarness.Assert(!TestHarness.ClipboardSettlesTo(null), "消去前の書き込みに失敗しました。");
 
         ProtectedClipboard.Clear();
-        TestHarness.Assert(ProtectedClipboard.TryGetText() is null, "Clearの後もテキストが残っています。");
+        TestHarness.Assert(TestHarness.ClipboardSettlesTo(null), "Clearの後もテキストが残っています。");
         TestHarness.Assert(
             ClipboardInterop.ReadFormat(ClipboardInterop.CfUnicodeText) is null,
             "Clearの後もCF_UNICODETEXTが載っています。");

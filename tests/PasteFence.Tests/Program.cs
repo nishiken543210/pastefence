@@ -83,6 +83,7 @@ Run("ヘルプに目的・基本操作・設定・具体例・Q&A相当を含む
 // 製品の中核（クリップボードの読み書き・状態の移り変わり）は試験の作りが重いので分けてある。
 RuleEngineTests.Register(harness);
 ConfigTests.Register(harness);
+DefaultRulesCorpusTests.Register(harness);
 
 // クリップボードと WinForms のオブジェクトは STA スレッドでしか扱えない。
 // 設定の読み込みは STA スレッドの外で済ませておく

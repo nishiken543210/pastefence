@@ -1,4 +1,4 @@
-namespace PasteFence.Tests;
+﻿namespace PasteFence.Tests;
 
 // 自作の試験ハーネス。外部パッケージ（NuGet）を足さない方針なので、
 // 合否の集計と出力の体裁だけを受け持つ。
@@ -29,6 +29,20 @@ internal sealed class TestHarness
     {
         _skips.Add($"{name}: {reason}");
         Console.WriteLine($"SKIP: {name} （{reason}）");
+    }
+
+    // クリップボードは他のアプリ（Windows のクリップボード履歴・クリップボード管理ツール）
+    // と取り合いになる。書いた直後に読むと、まだ届いていないことがある。
+    // 即座に判定すると試験がたまに赤くなり、赤を無視する癖がつくので、少し待って確かめ直す。
+    public static bool ClipboardSettlesTo(string? expected)
+    {
+        for (var i = 0; i < 20; i++)
+        {
+            if (ProtectedClipboard.TryGetText() == expected)
+                return true;
+            Thread.Sleep(25);
+        }
+        return false;
     }
 
     public static void Assert(bool condition, string message)

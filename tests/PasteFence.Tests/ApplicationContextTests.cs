@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace PasteFence.Tests;
@@ -112,7 +112,7 @@ internal static class ApplicationContextTests
             // 安全版の書き戻しと同じ経路。_lastWrittenText に覚えさせる
             probe.Invoke("WriteProtectedClipboard", Original);
             TestHarness.Assert(probe.GetField("_lastWrittenText") as string == Original, "書き戻した内容を覚えていません。");
-            TestHarness.Assert(ProtectedClipboard.TryGetText() == Original, "書き戻しがクリップボードへ届いていません。");
+            TestHarness.Assert(TestHarness.ClipboardSettlesTo(Original), "書き戻しがクリップボードへ届いていません。");
 
             probe.InvokeOnClipboardChanged();
 
@@ -139,7 +139,7 @@ internal static class ApplicationContextTests
 
             probe.Invoke("PermitOriginal");
 
-            TestHarness.Assert(ProtectedClipboard.TryGetText() == Original, "原文がクリップボードへ戻っていません。");
+            TestHarness.Assert(TestHarness.ClipboardSettlesTo(Original), "原文がクリップボードへ戻っていません。");
             TestHarness.Assert(probe.GetField("_lastWrittenText") as string == Original, "原文の書き戻しを自分の変更として覚えていません。");
 
             var permitUntil = (DateTimeOffset?)probe.GetField("_permitUntil");
@@ -165,7 +165,7 @@ internal static class ApplicationContextTests
 
             probe.Invoke("OnTimerTick");
 
-            TestHarness.Assert(ProtectedClipboard.TryGetText() == result.SafeText, "期限切れで安全版へ戻っていません。");
+            TestHarness.Assert(TestHarness.ClipboardSettlesTo(result.SafeText), "期限切れで安全版へ戻っていません。");
             AssertQuarantineCleared(probe);
             TestHarness.Assert(probe.TrayText() == "PasteFence - 監視中", $"トレイ表示が監視中へ戻っていません（実際: {probe.TrayText()}）。");
 
@@ -181,7 +181,7 @@ internal static class ApplicationContextTests
 
             probe.Invoke("DiscardQuarantine", true);
 
-            TestHarness.Assert(ProtectedClipboard.TryGetText() is null, "破棄したのにクリップボードに内容が残っています。");
+            TestHarness.Assert(TestHarness.ClipboardSettlesTo(null), "破棄したのにクリップボードに内容が残っています。");
             AssertQuarantineCleared(probe);
 
             var log = probe.ReadAuditLog();
@@ -200,7 +200,7 @@ internal static class ApplicationContextTests
             probe.InvokeOnClipboardChanged();
 
             AssertQuarantineCleared(probe);
-            TestHarness.Assert(ProtectedClipboard.TryGetText() == Harmless, "保護対象ではないコピーが書き換えられました。");
+            TestHarness.Assert(TestHarness.ClipboardSettlesTo(Harmless), "保護対象ではないコピーが書き換えられました。");
         }
     }
 

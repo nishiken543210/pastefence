@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <!-- PasteFence アイコン（大きい寸法用：32/48/64/128/256）
+       意味: 貼り付ける前に一度止める。
+         ・紺色の角丸 = アプリの土台
+         ・白いクリップボード = コピーした内容
+         ・琥珀色のクリップ = 「ここで一度止める」合図
+         ・紺色の 3 つの四角 = 伏せ字（■■■）
+         ・薄い線 = 伏せずに残る普通の文字
+       色を変えるときはこの 4 色だけを書き換える。 -->
+  <title>PasteFence</title>
+
+  <!-- 土台 -->
+  <rect x="0" y="0" width="256" height="256" rx="52" fill="#1B3A5C"/>
+
+  <!-- クリップボード本体 -->
+  <rect x="62" y="54" width="132" height="150" rx="18" fill="#FFFFFF"/>
+
+  <!-- クリップ（止める合図） -->
+  <rect x="102" y="38" width="52" height="32" rx="10" fill="#E9A13B"/>
+
+  <!-- 伏せずに残る文字 -->
+  <rect x="82" y="96" width="92" height="14" rx="7" fill="#BDCBD9"/>
+
+  <!-- 伏せ字 ■■■ -->
+  <rect x="82"  y="128" width="26" height="24" rx="3" fill="#1B3A5C"/>
+  <rect x="115" y="128" width="26" height="24" rx="3" fill="#1B3A5C"/>
+  <rect x="148" y="128" width="26" height="24" rx="3" fill="#1B3A5C"/>
+
+  <!-- 伏せずに残る文字 -->
+  <rect x="82" y="172" width="58" height="14" rx="7" fill="#BDCBD9"/>
+</svg>

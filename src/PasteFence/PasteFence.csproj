@@ -14,6 +14,16 @@
     <Description>AI やチャットへ貼る前に、クリップボードの機密を伏せ字にする常駐ツール</Description>
     <Copyright>Copyright (c) 2026 PasteFence authors</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+
+    <!-- エクスプローラー・ショートカット・Alt+Tab に出る実行ファイルのアイコン。
+         元になった SVG と作り直す手順は docs/icon.md にある。 -->
+    <ApplicationIcon>pastefence.ico</ApplicationIcon>
+
+    <!-- 高 DPI の扱い。SystemAware は .NET 8 の WinForms が「指定なし」のときに
+         使う値そのもので、ここに書いても今の挙動は何も変わらない。
+         将来 SDK の既定値が変わっても勝手に切り替わらないよう固定しているだけ。
+         PerMonitorV2 へ上げなかった理由は docs/high-dpi.md に書いた。 -->
+    <ApplicationHighDpiMode>SystemAware</ApplicationHighDpiMode>
   </PropertyGroup>
   <ItemGroup>
     <None Update="pastefence-rules.json">

@@ -1,4 +1,4 @@
-namespace PasteFence;
+﻿namespace PasteFence;
 
 public sealed record HelpSection(string Title, string Body);
 
@@ -16,8 +16,6 @@ public sealed record HelpTopic(
 
 public static class HelpContent
 {
-    public const string ManualVersion = "manual-v2";
-
     public const string TestSample = "顧客名A\r\n電話番号：080-1234-5678\r\n明日の打ち合わせは10時です。";
 
     public const string ExpectedSafeSample = "[顧客名を保護]\r\n電話番号：[電話番号を保護]\r\n明日の打ち合わせは10時です。";
@@ -247,7 +245,7 @@ public static class HelpContent
             "Portable版は、EXEがあるフォルダー内で設定とログを管理します。",
             [
                 new("主なファイル",
-                    "PasteFence.exe：アプリ本体\r\npastefence-rules.json：保護ルール\r\nlogs：監査ログ\r\npastefence-help-seen.txt：ヘルプ初回表示の記録"),
+                    "PasteFence.exe：アプリ本体\r\npastefence-rules.json：保護ルール\r\nlogs：監査ログ"),
                 new("更新時の注意",
                     "新しいEXEへ入れ替える前にpastefence-rules.jsonをバックアップしてください。旧PowerShell版とC#版は同時起動しないでください。"),
                 new("問い合わせ時に確認するもの",

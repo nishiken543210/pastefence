@@ -12,6 +12,22 @@ public sealed class ControlCenterForm : Form
 
     public ControlCenterForm()
     {
+        // 拡大表示（150% など）への対応。
+        // この画面の部品は位置も大きさもピクセル直書きだが、フォントだけは
+        // ポイント指定なので DPI に比例して伸びる。そのままだと文字が枠から
+        // はみ出すので、WinForms に座標と寸法も同じ比率で拡大させる。
+        //
+        // Font ではなく Dpi を使う理由: Font モードは「設計時のフォントの
+        // 平均文字寸法」を数値で書く必要があり、実測しないと決められない。
+        // Dpi モードの倍率は 現在のDPI ÷ 96 で決まるので実測が要らない。
+        // 100% の環境では倍率がちょうど 1.0 になり、拡大処理自体が走らない。
+        //
+        // SuspendLayout で囲むのは、拡大が「レイアウト時に 1 回だけ」走るため。
+        // 囲まないと部品を足す前に走ってしまい、何も拡大されない。
+        SuspendLayout();
+        AutoScaleMode = AutoScaleMode.Dpi;
+        AutoScaleDimensions = new SizeF(96F, 96F);
+
         Text = "PasteFence - コントロールセンター";
         StartPosition = FormStartPosition.CenterScreen;
         Size = new Size(730, 330);
@@ -101,6 +117,9 @@ public sealed class ControlCenterForm : Form
         };
 
         Controls.AddRange([title, subtitle, statusLabel, _statusValue, lastEventLabel, _lastEventValue, privacy, help, settings, logs, hide, exit]);
+
+        // ここまでで部品が出揃ったので、拡大を走らせる。
+        ResumeLayout(performLayout: false);
     }
 
     public void UpdateState(string status, string lastEvent, bool isHealthy)

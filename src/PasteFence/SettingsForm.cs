@@ -24,6 +24,11 @@ public sealed class SettingsForm : Form
 
     public SettingsForm(PasteFenceConfig source)
     {
+        // 拡大表示への対応。理由は ControlCenterForm.cs の同じ箇所に書いた。
+        SuspendLayout();
+        AutoScaleMode = AutoScaleMode.Dpi;
+        AutoScaleDimensions = new SizeF(96F, 96F);
+
         EditedConfig = Clone(source);
         _rules = new BindingList<ProtectionRule>(EditedConfig.Rules);
         _ruleSource.DataSource = _rules;
@@ -160,6 +165,9 @@ public sealed class SettingsForm : Form
             BindSelectedConditions();
         };
         UpdateRuleCount();
+
+        // ここまでで部品が出揃ったので、拡大を走らせる。
+        ResumeLayout(performLayout: false);
     }
 
     private DataGridView BuildRuleGrid()

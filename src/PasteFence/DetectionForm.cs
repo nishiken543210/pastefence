@@ -9,6 +9,11 @@ public sealed class DetectionForm : Form
 
     public DetectionForm(ProtectionResult result, int permitSeconds)
     {
+        // 拡大表示への対応。理由は ControlCenterForm.cs の同じ箇所に書いた。
+        SuspendLayout();
+        AutoScaleMode = AutoScaleMode.Dpi;
+        AutoScaleDimensions = new SizeF(96F, 96F);
+
         Text = "PasteFence - 保護対象を検出";
         StartPosition = FormStartPosition.CenterScreen;
         Size = new Size(680, 520);
@@ -124,5 +129,8 @@ public sealed class DetectionForm : Form
         };
 
         Controls.AddRange([title, rules, split, keepButton, permitButton, discardButton, helpButton]);
+
+        // ここまでで部品が出揃ったので、拡大を走らせる。
+        ResumeLayout(performLayout: false);
     }
 }

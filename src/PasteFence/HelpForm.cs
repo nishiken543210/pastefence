@@ -13,6 +13,11 @@ public sealed class HelpForm : Form
 
     public HelpForm()
     {
+        // 拡大表示への対応。理由は ControlCenterForm.cs の同じ箇所に書いた。
+        SuspendLayout();
+        AutoScaleMode = AutoScaleMode.Dpi;
+        AutoScaleDimensions = new SizeF(96F, 96F);
+
         Text = "PasteFence - ヘルプ";
         StartPosition = FormStartPosition.CenterScreen;
         Size = new Size(1040, 760);
@@ -156,6 +161,9 @@ public sealed class HelpForm : Form
         };
 
         PopulateTree(string.Empty);
+
+        // ここまでで部品が出揃ったので、拡大を走らせる。
+        ResumeLayout(performLayout: false);
     }
 
     private void PopulateTree(string query)

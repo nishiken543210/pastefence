@@ -6,7 +6,6 @@ public sealed class PasteFenceApplicationContext : ApplicationContext
 {
     private readonly string _configPath = ConfigLocator.Ensure();
     private readonly string _logDirectory = Path.Combine(AppContext.BaseDirectory, "logs");
-    private readonly string _helpSeenPath = Path.Combine(AppContext.BaseDirectory, "pastefence-help-seen.txt");
     private PasteFenceConfig _config;
     private readonly AuditLogger _logger;
     private readonly ClipboardMonitorWindow _monitor;
@@ -65,14 +64,10 @@ public sealed class PasteFenceApplicationContext : ApplicationContext
 
         _logger.Write("monitor", "started");
         UpdateStatus("監視中", "起動しました", true);
+        // 初回に大きなヘルプ画面を自動で開いていたが、読まれずに閉じられるだけだった。
+        // 代わりにコントロールセンターへ「はじめかた」を置いてある。
+        // ヘルプは「使い方」ボタンと F1 から開ける。
         _controlCenter.Show();
-        var shownManualVersion = string.Empty;
-        try { shownManualVersion = File.Exists(_helpSeenPath) ? File.ReadAllText(_helpSeenPath).Trim() : string.Empty; } catch { }
-        if (!shownManualVersion.Equals(HelpContent.ManualVersion, StringComparison.Ordinal))
-        {
-            _controlCenter.BeginInvoke(() => ShowHelp());
-            try { File.WriteAllText(_helpSeenPath, HelpContent.ManualVersion); } catch { }
-        }
     }
 
     private void OnClipboardChanged(object? sender, EventArgs args)

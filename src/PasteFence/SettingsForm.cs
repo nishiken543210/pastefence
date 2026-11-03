@@ -24,6 +24,11 @@ public sealed class SettingsForm : Form
 
     public SettingsForm(PasteFenceConfig source)
     {
+        // 拡大表示への対応。理由は ControlCenterForm.cs の同じ箇所に書いた。
+        SuspendLayout();
+        AutoScaleMode = AutoScaleMode.Dpi;
+        AutoScaleDimensions = new SizeF(96F, 96F);
+
         EditedConfig = Clone(source);
         _rules = new BindingList<ProtectionRule>(EditedConfig.Rules);
         _ruleSource.DataSource = _rules;
@@ -160,17 +165,20 @@ public sealed class SettingsForm : Form
             BindSelectedConditions();
         };
         UpdateRuleCount();
+
+        // ここまでで部品が出揃ったので、拡大を走らせる。
+        ResumeLayout(performLayout: false);
     }
 
     private DataGridView BuildRuleGrid()
     {
         var grid = BaseGrid();
-        grid.Columns.Add(new DataGridViewCheckBoxColumn { HeaderText = "有効", DataPropertyName = nameof(ProtectionRule.Enabled), Width = 60 });
+        grid.Columns.Add(new DataGridViewCheckBoxColumn { HeaderText = "有効", DataPropertyName = nameof(ProtectionRule.Enabled), AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells });
         grid.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "ルール名", DataPropertyName = nameof(ProtectionRule.Name), AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill });
-        var mode = new DataGridViewComboBoxColumn { HeaderText = "条件の接続", DataPropertyName = nameof(ProtectionRule.MatchModeDisplay), Width = 180 };
+        var mode = new DataGridViewComboBoxColumn { HeaderText = "条件の接続", DataPropertyName = nameof(ProtectionRule.MatchModeDisplay), AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells };
         mode.Items.AddRange("AND（すべて一致）", "OR（どれか一致）");
         grid.Columns.Add(mode);
-        grid.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "条件数", ReadOnly = true, Width = 90 });
+        grid.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "条件数", ReadOnly = true, AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells });
         grid.CellFormatting += (_, args) =>
         {
             if (args.ColumnIndex == 3 && args.RowIndex >= 0 && grid.Rows[args.RowIndex].DataBoundItem is ProtectionRule rule)
@@ -182,17 +190,22 @@ public sealed class SettingsForm : Form
     private static DataGridView BuildConditionGrid()
     {
         var grid = BaseGrid();
-        grid.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "条件名", DataPropertyName = nameof(ProtectionCondition.Label), Width = 160 });
-        var type = new DataGridViewComboBoxColumn { HeaderText = "判定方法", DataPropertyName = nameof(ProtectionCondition.MatchTypeDisplay), Width = 130 };
+        grid.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "条件名", DataPropertyName = nameof(ProtectionCondition.Label), AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells });
+        var type = new DataGridViewComboBoxColumn { HeaderText = "判定方法", DataPropertyName = nameof(ProtectionCondition.MatchTypeDisplay), AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells };
         type.Items.AddRange("文字を含む", "正規表現");
         grid.Columns.Add(type);
         grid.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "検出文字／パターン", DataPropertyName = nameof(ProtectionCondition.Pattern), AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill });
-        grid.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "安全版での表示", DataPropertyName = nameof(ProtectionCondition.ReplaceWith), Width = 220 });
+        grid.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "安全版での表示", DataPropertyName = nameof(ProtectionCondition.ReplaceWith), AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells });
         return grid;
     }
 
     private static DataGridView BaseGrid() => new()
     {
+        // DataGridView には拡大表示への追従が一切実装されていない
+        // （ScaleControl を持たない）。列幅・行高・見出し高をピクセルで
+        // 決めると 200% などで文字が切れるので、全て中身に合わせる。
+        ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize,
+        AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells,
         AutoGenerateColumns = false,
         AllowUserToAddRows = false,
         AllowUserToDeleteRows = false,

@@ -153,9 +153,16 @@ public sealed class ControlCenterForm : Form
         // 中身がちょうど入る大きさを実測して、それを窓の下限にする。
         // 拡大率がいくつでもボタンが窓の外へ出ない。これより小さくはできない。
         var needed = root.GetPreferredSize(Size.Empty);
+
+        // ボタンが 2 段に折り返さないよう、5 つ横に並べた幅も下限に含める。
+        // （折り返しても押せはするが、1 段に収まるほうが読みやすい。）
+        var buttonsRow = root.Padding.Horizontal;
+        foreach (Control button in buttons.Controls)
+            buttonsRow += button.PreferredSize.Width + button.Margin.Horizontal;
+
         // 「最後のイベント」の文が伸びたときのために 1 行ぶん余裕を足す
         var oneLine = TextRenderer.MeasureText("あ", Font).Height;
-        ClientSize = new Size(needed.Width, needed.Height + oneLine);
+        ClientSize = new Size(Math.Max(needed.Width, buttonsRow), needed.Height + oneLine);
         MinimumSize = Size;
     }
 
